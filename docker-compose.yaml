@@ -1,7 +1,6 @@
-name: hw-02
 services:
   web:
-    build: './FullStack-Web-Development-hw2'
+    build: './homework-02'
     ports:
       - '8000:8000'
     depends_on:
