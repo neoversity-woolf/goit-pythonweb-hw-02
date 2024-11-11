@@ -1,13 +1,23 @@
-FROM python:3.12
+FROM python:3.12-alpine3.20 AS builder
 
-ENV APP_HOME /
+RUN apk add --no-cache build-base libpq-dev
 
-WORKDIR ${APP_HOME}
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --prefix=/install -r requirements.txt
+
+FROM python:3.12-alpine3.20
+
+RUN apk add --no-cache libpq
+
+WORKDIR /app
 
 COPY . .
 
-RUN pip install -r requirements.txt
+COPY --from=builder /install /usr/local
 
-EXPOSE 5000
+EXPOSE 8000
 
-ENTRYPOINT [ "python", "main.py" ]
+CMD ["python", "main.py"]
